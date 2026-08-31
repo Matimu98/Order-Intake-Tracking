@@ -1,0 +1,55 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>Orders</h1>
+      <p class="subtitle">Most recent orders first</p>
+    </div>
+    <a routerLink="/orders/new" class="btn btn-primary">New Order</a>
+  </header>
+
+  <div class="toolbar">
+    <label for="statusFilter">Filter by status</label>
+    <select id="statusFilter" [(ngModel)]="statusFilter" class="select">
+      <option value="">All statuses</option>
+      @for (option of statusOptions; track option[0]) {
+        <option [value]="option[0]">{{ option[1] }}</option>
+      }
+    </select>
+    <button type="button" class="btn btn-secondary" (click)="loadOrders()">Refresh</button>
+  </div>
+
+  @if (loading) {
+    <p class="message">Loading orders...</p>
+  } @else if (error) {
+    <p class="message error">{{ error }}</p>
+  } @else if (filteredOrders.length === 0) {
+    <p class="message">No orders found.</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of filteredOrders; track order.id) {
+            <tr>
+              <td>{{ order.externalReference }}</td>
+              <td>{{ order.customer.name }}</td>
+              <td><span class="badge" [ngClass]="statusClass(order.status)">{{ statusLabels[order.status] }}</span></td>
+              <td>{{ order.total | currency: order.currency }}</td>
+              <td>{{ order.createdAt | date: 'medium' }}</td>
+              <td><a [routerLink]="['/orders', order.id]">View</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

@@ -1,0 +1,44 @@
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0.5rem 1rem;
+}
+
+dt {
+  color: #6b7280;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.status-panel {
+  margin-top: 1rem;
+}
+
+.status-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

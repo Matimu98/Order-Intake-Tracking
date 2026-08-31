@@ -1,0 +1,86 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>Order Details</h1>
+      <p class="subtitle">Review totals and status</p>
+    </div>
+    <a routerLink="/orders" class="btn btn-secondary">Back to list</a>
+  </header>
+
+  @if (loading) {
+    <p class="message">Loading order...</p>
+  } @else if (error) {
+    <p class="message error">{{ error }}</p>
+  } @else if (order) {
+    <div class="card detail-grid">
+      <div>
+        <h2>Summary</h2>
+        <dl>
+          <dt>Reference</dt><dd>{{ order.externalReference }}</dd>
+          <dt>Status</dt>
+          <dd><span class="badge" [ngClass]="statusClass(order.status)">{{ statusLabels[order.status] }}</span></dd>
+          <dt>Created</dt><dd>{{ order.createdAt | date: 'medium' }}</dd>
+          <dt>Updated</dt><dd>{{ order.updatedAt ? (order.updatedAt | date: 'medium') : '—' }}</dd>
+          <dt>Subtotal</dt><dd>{{ order.subtotal | currency: order.currency }}</dd>
+          <dt>Total</dt><dd><strong>{{ order.total | currency: order.currency }}</strong></dd>
+        </dl>
+      </div>
+
+      <div>
+        <h2>Customer</h2>
+        <dl>
+          <dt>Name</dt><dd>{{ order.customer.name }}</dd>
+          <dt>Email</dt><dd>{{ order.customer.email }}</dd>
+        </dl>
+
+        @if (order.notes) {
+          <h2>Notes</h2>
+          <p>{{ order.notes }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Line Items</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of order.lineItems; track item.id) {
+            <tr>
+              <td>{{ item.sku }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitPrice | currency: order.currency }}</td>
+              <td>{{ item.lineTotal | currency: order.currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card status-panel">
+      <h2>Update Status</h2>
+      <div class="status-form">
+        <select [(ngModel)]="selectedStatus">
+          @for (option of statusOptions; track option[0]) {
+            <option [ngValue]="+option[0]">{{ option[1] }}</option>
+          }
+        </select>
+        <button type="button" class="btn btn-primary" (click)="updateStatus()" [disabled]="updatingStatus || selectedStatus === order.status">
+          {{ updatingStatus ? 'Updating...' : 'Update Status' }}
+        </button>
+      </div>
+      @if (statusMessage) {
+        <p class="message">{{ statusMessage }}</p>
+      }
+    </div>
+  }
+</section>

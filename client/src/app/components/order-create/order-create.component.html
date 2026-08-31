@@ -1,0 +1,105 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>Submit Order</h1>
+      <p class="subtitle">Use a unique client reference to avoid duplicates</p>
+    </div>
+    <a routerLink="/orders" class="btn btn-secondary">Back to list</a>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="card form-grid">
+    @if (validationMessage) {
+      <p class="message error full-width">{{ validationMessage }}</p>
+    }
+
+    <div class="field">
+      <label for="externalReference">External Reference *</label>
+      <input id="externalReference" formControlName="externalReference" placeholder="PO-12345" />
+      @if (isInvalid('externalReference')) {
+        <span class="field-error">External reference is required.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="currency">Currency *</label>
+      <input id="currency" formControlName="currency" maxlength="3" />
+      @if (isInvalid('currency')) {
+        <span class="field-error">Currency is required.</span>
+      }
+    </div>
+
+    <div class="field full-width">
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="3" formControlName="notes"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="customerName">Customer Name *</label>
+      <input id="customerName" formControlName="customerName" />
+      @if (isInvalid('customerName')) {
+        <span class="field-error">Customer name is required.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="customerEmail">Customer Email *</label>
+      <input id="customerEmail" type="email" formControlName="customerEmail" placeholder="name@example.com" />
+      @if (isInvalid('customerEmail')) {
+        <span class="field-error">Enter a valid email address.</span>
+      }
+    </div>
+
+    <div class="full-width">
+      <div class="line-items-header">
+        <h2>Line Items</h2>
+        <button type="button" class="btn btn-secondary" (click)="addLineItem()">Add item</button>
+      </div>
+
+      <div formArrayName="lineItems" class="line-items">
+        @for (item of lineItems.controls; track $index; let i = $index) {
+          <div class="line-item" [formGroupName]="i">
+            <div class="line-item-field">
+              <input formControlName="sku" placeholder="SKU" />
+              @if (isLineItemInvalid(i, 'sku')) {
+                <span class="field-error">SKU is required.</span>
+              }
+            </div>
+            <div class="line-item-field">
+              <input formControlName="name" placeholder="Name" />
+              @if (isLineItemInvalid(i, 'name')) {
+                <span class="field-error">Name is required.</span>
+              }
+            </div>
+            <div class="line-item-field">
+              <input formControlName="quantity" type="number" min="1" placeholder="Qty" />
+              @if (isLineItemInvalid(i, 'quantity')) {
+                <span class="field-error">Quantity must be at least 1.</span>
+              }
+            </div>
+            <div class="line-item-field">
+              <input formControlName="unitPrice" type="number" min="0" step="0.01" placeholder="Unit price" />
+              @if (isLineItemInvalid(i, 'unitPrice')) {
+                <span class="field-error">Price cannot be negative.</span>
+              }
+            </div>
+            <button type="button" class="btn btn-danger" (click)="removeLineItem(i)" [disabled]="lineItems.length === 1">Remove</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (error) {
+      <p class="message error full-width">{{ error }}</p>
+    }
+
+    @if (successMessage) {
+      <p class="message success full-width">{{ successMessage }}</p>
+    }
+
+    <div class="actions full-width">
+      <button type="submit" class="btn btn-primary" [disabled]="submitting">
+        {{ submitting ? 'Submitting...' : 'Submit Order' }}
+      </button>
+    </div>
+  </form>
+</section>

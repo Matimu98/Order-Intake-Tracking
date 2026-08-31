@@ -1,0 +1,27 @@
+## Build results
+**/bin/
+**/obj/
+**/out/
+
+## IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+## Node / Angular
+client/node_modules/
+client/dist/
+client/.angular/
+
+## OS
+Thumbs.db
+.DS_Store
+
+## Logs
+*.log
+npm-debug.log*
+
+## Environment
+.env
+.env.*
